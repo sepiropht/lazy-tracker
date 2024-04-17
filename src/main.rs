@@ -23,11 +23,13 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
     ExecutableCommand,
 };
+
 use ratatui::{
     prelude::*,
     style::palette::tailwind,
     widgets::{block::Title, Block, Borders, Gauge, Padding, Paragraph},
 };
+use tui_big_text::{BigTextBuilder, PixelSize};
 
 const GAUGE1_COLOR: Color = tailwind::RED.c800;
 const GAUGE2_COLOR: Color = tailwind::GREEN.c800;
@@ -131,10 +133,11 @@ impl Widget for &App {
         let [gauge1_area, gauge2_area, gauge3_area, gauge4_area] = layout.areas(gauge_area);
 
         render_header(header_area, buf);
+        render_text(gauge3_area, buf);
         render_footer(footer_area, buf);
 
         self.render_gauge1(gauge1_area, buf);
-  }
+    }
 }
 
 fn render_header(area: Rect, buf: &mut Buffer) {
@@ -153,6 +156,13 @@ fn render_footer(area: Rect, buf: &mut Buffer) {
         .render(area, buf);
 }
 
+fn render_text(area: Rect, buf: &mut Buffer) {
+    let big_text = BigTextBuilder::default()
+        .lines(vec![Line::from("Travaille !!")])
+        .build()
+        .expect("crash");
+    big_text.render(area, buf);
+}
 impl App {
     fn render_gauge1(&self, area: Rect, buf: &mut Buffer) {
         let title = title_block("Pourcentage de tâches accomplies");
